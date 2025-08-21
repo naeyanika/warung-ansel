@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { BreakfastItem, JastipOrder, supabase } from '../../lib/supabase';
 
+
 export default function JastipSection() {
   const { isAdmin } = useAuth();
   const [breakfastItems, setBreakfastItems] = useState<BreakfastItem[]>([]);
@@ -10,6 +11,9 @@ export default function JastipSection() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // ON/OFF state for order form
+  const [orderFormActive, setOrderFormActive] = useState(true);
 
   // Form states
   const [orderForm, setOrderForm] = useState({
@@ -174,12 +178,24 @@ export default function JastipSection() {
     );
   }
 
+
   return (
     <div className="bg-white rounded-2xl shadow-lg p-6">
-      <div className="flex items-center gap-3 mb-6">
-        <Coffee className="h-6 w-6 text-cyan-600" />
-        <h2 className="text-xl font-bold text-gray-800">Jastip</h2>
-        <span className="text-sm text-gray-500">Sarapan & Kopi Pagi</span>
+      <div className="flex items-center gap-3 mb-6 justify-between">
+        <div className="flex items-center gap-3">
+          <Coffee className="h-6 w-6 text-cyan-600" />
+          <h2 className="text-xl font-bold text-gray-800">Jastip</h2>
+          <span className="text-sm text-gray-500">Sarapan & Kopi Pagi</span>
+        </div>
+        {isAdmin && (
+          <button
+            onClick={() => setOrderFormActive(v => !v)}
+            className={`px-3 py-1 rounded-lg font-semibold transition-colors ${orderFormActive ? 'bg-green-500 text-white' : 'bg-gray-300 text-gray-700'}`}
+            title="Aktifkan/Nonaktifkan Form Order"
+          >
+            {orderFormActive ? 'Form ON' : 'Form OFF'}
+          </button>
+        )}
       </div>
 
       {message && (
@@ -197,81 +213,85 @@ export default function JastipSection() {
         </div>
       )}
 
-      {/* Order Form */}
-      <form onSubmit={submitOrder} className="space-y-4 mb-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Nama (minimal 3 karakter)
-          </label>
-          <input
-            type="text"
-            value={orderForm.name}
-            onChange={(e) => setOrderForm({ ...orderForm, name: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            placeholder="Masukkan nama Anda"
-            minLength={3}
-            required
-          />
-        </div>
+      {/* Order Form ON/OFF */}
+      {orderFormActive ? (
+        <form onSubmit={submitOrder} className="space-y-4 mb-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Nama (minimal 3 karakter)
+            </label>
+            <input
+              type="text"
+              value={orderForm.name}
+              onChange={(e) => setOrderForm({ ...orderForm, name: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder="Masukkan nama Anda"
+              minLength={3}
+              required
+            />
+          </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Pilih Sarapan
-          </label>
-          <select
-            value={orderForm.breakfast}
-            onChange={(e) => setOrderForm({ ...orderForm, breakfast: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            required
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Pilih Sarapan
+            </label>
+            <select
+              value={orderForm.breakfast}
+              onChange={(e) => setOrderForm({ ...orderForm, breakfast: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              required
+            >
+              <option value="">Pilih sarapan...</option>
+              {breakfastItems.map((item) => (
+                <option key={item.id} value={item.name}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Additional Request (opsional)
+            </label>
+            <textarea
+              value={orderForm.additional}
+              onChange={e => setOrderForm({ ...orderForm, additional: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder="Contoh: tanpa sambal, request khusus, dll."
+              rows={2}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {coffeeTitle}
+            </label>
+            <input
+              type="text"
+              value={orderForm.coffee}
+              onChange={(e) => setOrderForm({ ...orderForm, coffee: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              placeholder="Es Kopi Susu, dll."
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full bg-cyan-600 text-white py-3 px-4 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
           >
-            <option value="">Pilih sarapan...</option>
-            {breakfastItems.map((item) => (
-              <option key={item.id} value={item.name}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Additional Request (opsional)
-          </label>
-          <textarea
-            value={orderForm.additional}
-            onChange={e => setOrderForm({ ...orderForm, additional: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            placeholder="Contoh: tanpa sambal, request khusus, dll."
-            rows={2}
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {coffeeTitle}
-          </label>
-          <input
-            type="text"
-            value={orderForm.coffee}
-            onChange={(e) => setOrderForm({ ...orderForm, coffee: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-            placeholder="Es Kopi Susu, dll."
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full bg-cyan-600 text-white py-3 px-4 rounded-lg hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
-        >
-          {submitting ? 'Mengirim...' : 'Pesan Sekarang'}
-        </button>
-      </form>
+            {submitting ? 'Mengirim...' : 'Pesan Sekarang'}
+          </button>
+        </form>
+      ) : (
+        <div className="text-center text-gray-500 my-8">Form order sedang dimatikan admin.</div>
+      )}
 
       {/* Admin Controls */}
       {isAdmin && (
         <div className="border-t pt-6 space-y-6">
           <h3 className="text-lg font-semibold text-gray-800">Panel Admin</h3>
-          
+
           {/* Coffee Title Editor */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">

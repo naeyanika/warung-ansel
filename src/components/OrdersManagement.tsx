@@ -316,7 +316,7 @@ export default function OrdersManagement() {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6">
+  <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
       {/* Tab Switch */}
       <div className="flex gap-2 mb-6">
         <button
@@ -358,7 +358,7 @@ export default function OrdersManagement() {
                 { value: 'all', label: 'Semua' },
                 { value: 'jastip', label: 'Jastip' },
                 { value: 'eri_catering', label: 'Eri Catering' },
-                { value: 'warung_audit', label: 'Warung Audit' }
+                // { value: 'warung_audit', label: 'Warung Audit' }
               ].map(filter => (
                 <button
                   key={filter.value}

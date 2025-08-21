@@ -1,13 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { FileText, LogIn } from 'lucide-react';
+import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import Layout from './components/Layout';
 import LoginForm from './components/LoginForm';
 import OrdersManagement from './components/OrdersManagement';
-import JastipSection from './components/sections/JastipSection';
 import EriCateringSection from './components/sections/EriCateringSection';
-import WarungAuditSection from './components/sections/WarungAuditSection';
-import { LogIn, FileText } from 'lucide-react';
+import JastipSection from './components/sections/JastipSection';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 function HomePage() {
   const { user, loading } = useAuth();
@@ -56,7 +54,7 @@ function HomePage() {
       {/* Main Sections */}
       <JastipSection />
       <EriCateringSection />
-      <WarungAuditSection />
+  {/* <WarungAuditSection /> */}
 
       {/* Login Section for Non-authenticated Users */}
       {!user && (

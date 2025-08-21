@@ -12,10 +12,10 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50 flex flex-col">
+  <div className="min-h-screen bg-gradient-to-br from-cyan-50 to-blue-50 flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-cyan-100">
-        <div className="max-w-4xl mx-auto px-4 md:px-8 py-4 w-full">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-4 w-full">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex-1">
               <div>
@@ -83,13 +83,13 @@ export default function Layout({ children }: LayoutProps) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 w-full max-w-4xl mx-auto px-4 md:px-8 py-6">
+  <main className="flex-1 w-full max-w-7xl mx-auto px-6 md:px-12 py-8">
         {children}
       </main>
 
       {/* Footer */}
       <footer className="bg-white border-t border-cyan-100 mt-12">
-        <div className="max-w-4xl mx-auto px-4 md:px-8 py-6 text-center">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-6 text-center">
           <p className="text-sm text-gray-500">
             © 2025 Warung Ansel - Anak Selatan
           </p>
