@@ -1,8 +1,8 @@
-import qrisAnsel from '../assets/qris-ansel.jpeg';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Calendar, Coffee, Download, FileText, Trash2, User, Utensils, UtensilsCrossed } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import qrisAnsel from '../assets/qris-ansel.jpeg';
 import {
   Table,
   TableBody,
@@ -17,6 +17,7 @@ import { EriCateringOrder, JastipOrder, supabase, WarungAuditOrder } from '../li
 interface OrderWithType extends JastipOrder {
   type: 'jastip';
   items: Array<{ name: string; price: number }>;
+  additional?: string;
 }
 
 interface EriOrderWithType extends EriCateringOrder {
@@ -402,6 +403,7 @@ export default function OrdersManagement() {
                     <TableHead>Jenis</TableHead>
                     <TableHead>Nama</TableHead>
                     <TableHead>Items</TableHead>
+                    <TableHead>Additional</TableHead>
                     {/* <TableHead>Total</TableHead> */}
                     <TableHead>Tanggal</TableHead>
                     <TableHead>Aksi</TableHead>
@@ -439,6 +441,11 @@ export default function OrdersManagement() {
                             {order.items.map((item, index) => (
                               <div key={index}>{item.name}</div>
                             ))}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="text-sm text-gray-600 whitespace-pre-line">
+                            {order.type === 'jastip' && 'additional' in order && order.additional ? order.additional : '-'}
                           </div>
                         </TableCell>
                         {/* <TableCell>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { AlertCircle, CheckCircle, Coffee, Edit, Plus, Trash2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { supabase, BreakfastItem, JastipOrder } from '../../lib/supabase';
-import { Coffee, Plus, Trash2, Edit, CheckCircle, AlertCircle } from 'lucide-react';
+import { BreakfastItem, JastipOrder, supabase } from '../../lib/supabase';
 
 export default function JastipSection() {
   const { isAdmin } = useAuth();
@@ -15,7 +15,8 @@ export default function JastipSection() {
   const [orderForm, setOrderForm] = useState({
     name: '',
     breakfast: '',
-    coffee: 'Fore Coffee'
+    coffee: 'Fore Coffee',
+    additional: ''
   });
 
   // Admin form states
@@ -73,13 +74,14 @@ export default function JastipSection() {
         .insert([{
           name: orderForm.name,
           breakfast: orderForm.breakfast,
-          coffee: orderForm.coffee
+          coffee: orderForm.coffee,
+          additional: orderForm.additional
         }]);
 
       if (error) throw error;
 
       setMessage({ type: 'success', text: 'Pesanan berhasil dikirim!' });
-      setOrderForm({ name: '', breakfast: '', coffee: coffeeTitle });
+      setOrderForm({ name: '', breakfast: '', coffee: coffeeTitle, additional: '' });
       
       if (isAdmin) {
         fetchOrders();
@@ -229,6 +231,18 @@ export default function JastipSection() {
               </option>
             ))}
           </select>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Additional Request (opsional)
+          </label>
+          <textarea
+            value={orderForm.additional}
+            onChange={e => setOrderForm({ ...orderForm, additional: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            placeholder="Contoh: tanpa sambal, request khusus, dll."
+            rows={2}
+          />
         </div>
 
         <div>
